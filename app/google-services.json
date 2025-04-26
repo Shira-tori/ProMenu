@@ -12,7 +12,12 @@
           "package_name": "com.example.promenu"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "735937519949-lr4jbgiv3fnom32r59au9o16kg3kpsfr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBrg44m_DCWOQashtBE6c-yN3YP3tRDFpU"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735937519949-lr4jbgiv3fnom32r59au9o16kg3kpsfr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
