@@ -6,6 +6,10 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="menu_button">Menu</string>
+    <string name="home_button_bottomAppBar">Home</string>
+    <string name="bottomnavbar_order_button">Orders</string>
+    <string name="bottomnavbar_accounts_button">Account</string>
 
 
     <string name="lorem_ipsum">
@@ -44,4 +48,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>
