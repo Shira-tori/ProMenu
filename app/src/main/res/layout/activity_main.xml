@@ -11,16 +11,16 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height=".45in"
-        android:background="@color/design_default_color_primary_variant"
+        android:background="#01357A"
         android:maxHeight="@dimen/fui_heading_padding_bottom"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/toolbar_menu"
         app:subtitleTextColor="@color/design_default_color_on_secondary"
-        tools:textAlignment="center"
-        app:menu="@menu/toolbar_menu"/>
+        tools:textAlignment="center" />
 
     <TextView
         android:id="@+id/textView4"
@@ -37,8 +37,10 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:layout_width="wrap_content"
+        android:name="com.example.promenu.HomeFragment"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/background_gradient"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +50,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="#01357A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

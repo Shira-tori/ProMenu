@@ -1,6 +1,7 @@
 package com.example.promenu;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -10,10 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
-    private BottomNavigationView bottomNavigationView;
-    private HomeFragment homeFragment;
-    private AccountFragment accountFragment;
-    private OrdersFragment ordersFragment;
+    private LinearLayout linearLayout;
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +31,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+
     }
 }
