@@ -51,6 +51,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#01357A"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
