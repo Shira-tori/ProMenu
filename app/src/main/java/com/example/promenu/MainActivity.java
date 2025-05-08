@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if(itemId == R.id.home){
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, HomeFragment.class, null).commit();
-                RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                recyclerView.setAdapter(new RecyclerViewAdapter());
-                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
             } else if (itemId == R.id.orders) {
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, OrdersFragment.class, null).commit();
             } else if (itemId == R.id.account) {

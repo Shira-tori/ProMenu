@@ -7,6 +7,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +62,19 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_account, container, false);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        TextView accountNameTextView = view.findViewById(R.id.accountNameTextView);
+        accountNameTextView.setText(user.getDisplayName());
+        TextView emailTextView = view.findViewById(R.id.emailTextView);
+        emailTextView.setText(user.getEmail());
+        TextView phoneNumberTextView = view.findViewById(R.id.phoneNumberTextView);
+        phoneNumberTextView.setText(user.getPhoneNumber());
+        if(user.getPhoneNumber() == null){
+            phoneNumberTextView.setText("No Phone Number");
+        }
+        return view;
     }
+
 }
