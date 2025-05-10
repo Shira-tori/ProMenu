@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "735937519949",
-    "project_id": "promenu-cf9b4",
-    "storage_bucket": "promenu-cf9b4.firebasestorage.app"
+    "project_number": "510185483820",
+    "project_id": "promenu-71a17",
+    "storage_bucket": "promenu-71a17.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:735937519949:android:fdbe913b3442eb2cbbd704",
+        "mobilesdk_app_id": "1:510185483820:android:bc81f425651bfbc0886b89",
         "android_client_info": {
-          "package_name": "com.example.promenu"
+          "package_name": "com.example.proMenu"
         }
       },
       "oauth_client": [
         {
-          "client_id": "735937519949-lr4jbgiv3fnom32r59au9o16kg3kpsfr.apps.googleusercontent.com",
+          "client_id": "510185483820-nlisu1pnrg0ilu40cg629833eiij71rt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proMenu",
+            "certificate_hash": "b2af95d60868e21dd7a725bc98408f8c33aa4ea2"
+          }
+        },
+        {
+          "client_id": "510185483820-df7oofqtisnj9on17r8g8e4ddr42kv9o.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBrg44m_DCWOQashtBE6c-yN3YP3tRDFpU"
+          "current_key": "AIzaSyBWEN013U-dRSnQZsYtqXAzpipTapt6GPM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "735937519949-lr4jbgiv3fnom32r59au9o16kg3kpsfr.apps.googleusercontent.com",
+              "client_id": "510185483820-df7oofqtisnj9on17r8g8e4ddr42kv9o.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

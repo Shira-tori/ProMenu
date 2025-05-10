@@ -1,4 +1,4 @@
-package com.example.promenu;
+package com.example.proMenu;
 
 import org.junit.Test;
 

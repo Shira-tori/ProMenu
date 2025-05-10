@@ -1,4 +1,4 @@
-package com.example.promenu;
+package com.example.proMenu;
 
 import static android.content.ContentValues.TAG;
 
@@ -8,16 +8,12 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.helper.widget.Grid;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.promenu.databinding.ActivityMainBinding;
+import com.example.proMenu.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private ActivityMainBinding binding;
     private LinkedList<String> store_names = new LinkedList<String>();
+    private String[] stringArray;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +50,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        stringArray = new String[store_names.size()];
+        store_names.toArray(stringArray);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if(itemId == R.id.home){
-                fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, HomeFragment.class, null).commit();
+                HomeFragment homeFragment = new HomeFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                Bundle dataBundle = new Bundle();
+                dataBundle.putStringArray("stores", stringArray);
+                homeFragment.setArguments(dataBundle);
+                transaction.replace(R.id.fragmentContainerView, homeFragment, null).commit();
             } else if (itemId == R.id.orders) {
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, OrdersFragment.class, null).commit();
             } else if (itemId == R.id.account) {

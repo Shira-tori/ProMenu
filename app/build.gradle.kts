@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.promenu"
+    namespace = "com.example.proMenu"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.promenu"
+        applicationId = "com.example.proMenu"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.gridlayout)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore)
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -1,4 +1,4 @@
-package com.example.promenu;
+package com.example.proMenu;
 
 import android.os.Bundle;
 
@@ -67,7 +67,9 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setAdapter(new RecyclerViewAdapter());
+        Bundle bundle = getArguments();
+        String[] stores = bundle.getStringArray("stores");
+        recyclerView.setAdapter(new RecyclerViewAdapter(view.getContext(), stores));
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity().getApplicationContext(), 2));
         return view;
     }
