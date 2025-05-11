@@ -2,6 +2,7 @@ package com.example.proMenu;
 
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,11 +69,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        Bundle bundle = getArguments();
-        String[] stores = bundle.getStringArray("stores");
-        recyclerView.setAdapter(new RecyclerViewAdapter(view.getContext(), stores));
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity().getApplicationContext(), 2));
+        ScrollView scrollView = view.findViewById(R.id.scrollView);
         return view;
     }
 }

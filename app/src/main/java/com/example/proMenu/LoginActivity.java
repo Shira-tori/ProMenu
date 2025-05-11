@@ -29,8 +29,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,20 +84,26 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> result = document.getData();
-                                if(result.get(user.getUid()) != null){
+                                if(document.getId().equals(user.getUid())){
 
-                                    // TODO: ADD UID TO DATABASE
+                                    if(Objects.equals(document.get("type"), "merchant")){
+                                        Log.w(TAG, "SUCCESS");
+                                        Intent intent = new Intent(LoginActivity.this, MerchantActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        return;
+                                    }
                                 };
                             }
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
-                Intent i = new Intent(this, MainActivity.class);
-                startActivity(i);
-                finish();
+
             }
         } else {
 
