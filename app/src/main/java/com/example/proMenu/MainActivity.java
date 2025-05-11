@@ -52,14 +52,12 @@ public class MainActivity extends AppCompatActivity {
                 });
         stringArray = new String[store_names.size()];
         store_names.toArray(stringArray);
+        fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, HomeFragment.class, null).commit();
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if(itemId == R.id.home){
                 HomeFragment homeFragment = new HomeFragment();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                Bundle dataBundle = new Bundle();
-                dataBundle.putStringArray("stores", stringArray);
-                homeFragment.setArguments(dataBundle);
                 transaction.replace(R.id.fragmentContainerView, homeFragment, null).commit();
             } else if (itemId == R.id.orders) {
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, OrdersFragment.class, null).commit();
