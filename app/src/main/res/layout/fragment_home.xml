@@ -16,14 +16,14 @@
             android:id="@+id/homeGridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:columnCount="2">
+            app:columnCount="1">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_margin="20dp"
                 app:cardCornerRadius="20dp"
-                app:layout_columnSpan="2">
+                app:layout_columnSpan="1">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

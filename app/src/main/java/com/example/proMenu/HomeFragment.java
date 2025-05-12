@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Constraints;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -102,9 +103,22 @@ public class HomeFragment extends Fragment {
                     TextView storeNameText = inflateView.findViewById(R.id.storeNameText);
                     storeNameText.setText((String) data.get("name"));
                     inflateView.setId(View.generateViewId());
+                    CardView cardView = inflateView.findViewById(R.id.cardView);
+                    cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FragmentManager parentFragment = getParentFragmentManager();
+                            Bundle dataBundle = new Bundle();
+                            StoreFragment fragment = new StoreFragment();
+                            dataBundle.putStringArray("menu", (String[]) document.get("menu"));
+                            fragment.setArguments(dataBundle);
+                            parentFragment.beginTransaction().replace(R.id.fragmentContainerView, fragment, null).commit();
+                        }
+                    });
                     ImageView imageView = inflateView.findViewById(R.id.imageView);
                     constraintLayout[0].addView(inflateView);
                     if(constraintLayout[0].getChildCount() == 2) {
+                        float scale = getContext().getResources().getDisplayMetrics().density;
                         constraintLayout[0].setId(View.generateViewId());
                         ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
                         ConstraintLayout.LayoutParams params1 = (ConstraintLayout.LayoutParams) constraintLayout[0].getChildAt(0).getLayoutParams();
@@ -119,6 +133,7 @@ public class HomeFragment extends Fragment {
                         params2.bottomToBottom = constraintLayout[0].getId();
                         params2.endToEnd = constraintLayout[0].getId();
                         params2.width = Constraints.LayoutParams.MATCH_CONSTRAINT;
+                        layoutParams.bottomMargin = (int) (20 * scale + 0.5f);
                         constraintLayout[0].getChildAt(0).setLayoutParams(params1);
                         constraintLayout[0].getChildAt(1).setLayoutParams(params2);
                         constraintLayout[0].setLayoutParams(layoutParams);
