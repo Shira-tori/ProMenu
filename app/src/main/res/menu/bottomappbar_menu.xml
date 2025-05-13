@@ -4,6 +4,10 @@
         android:icon="@drawable/home"
         android:id="@+id/home"/>
     <item
+        android:id="@+id/cart"
+        android:icon="@drawable/baseline_add_shopping_cart_24"
+        android:title="@string/cart" />
+    <item
         android:id="@+id/orders"
         android:icon="@drawable/baseline_local_grocery_store_24"
         android:title="@string/bottomnavbar_order_button" />

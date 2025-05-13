@@ -1,26 +1,21 @@
 package com.example.proMenu;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.ActionBar;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Constraints;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.gridlayout.widget.GridLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,39 +27,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment {
 
     private LinearLayout linearLayout;
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView toolbarTitleText;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -97,6 +78,12 @@ public class HomeFragment extends Fragment {
         stores.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(isVisible()){
+                    View containerView = container.getRootView();
+                    TextView textView = containerView.findViewById(R.id.toolBarTextView);
+                    textView.setText(R.string.app_name);
+                }
+                ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
                 for(QueryDocumentSnapshot document : task.getResult()){
                     Map<String, Object> data = document.getData();
                     View inflateView = inflater.inflate(R.layout.recycler_view_item_layout, container, false);
@@ -110,36 +97,54 @@ public class HomeFragment extends Fragment {
                             FragmentManager parentFragment = getParentFragmentManager();
                             Bundle dataBundle = new Bundle();
                             StoreFragment fragment = new StoreFragment();
-                            dataBundle.putStringArray("menu", (String[]) document.get("menu"));
-                            fragment.setArguments(dataBundle);
-                            parentFragment.beginTransaction().replace(R.id.fragmentContainerView, fragment, null).commit();
+                            ArrayList<String> menu = (ArrayList<String>) document.get("menu");
+                            if(menu != null){
+                                String[] menuArray = new String[menu.size()];
+                                menu.toArray(menuArray);
+                                dataBundle.putStringArray("menu", menuArray);
+                                dataBundle.putString("documentId", document.getId());
+                                fragment.setArguments(dataBundle);
+                            }
+                            parentFragment.beginTransaction().replace(R.id.fragmentContainerView, fragment, null).addToBackStack(null)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                            View parentView = container.getRootView();
+                            toolbarTitleText = parentView.findViewById(R.id.toolBarTextView);
+                            toolbarTitleText.setText((String) document.get("name"));
+
                         }
                     });
-                    ImageView imageView = inflateView.findViewById(R.id.imageView);
                     constraintLayout[0].addView(inflateView);
                     if(constraintLayout[0].getChildCount() == 2) {
-                        float scale = getContext().getResources().getDisplayMetrics().density;
-                        constraintLayout[0].setId(View.generateViewId());
-                        ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
-                        ConstraintLayout.LayoutParams params1 = (ConstraintLayout.LayoutParams) constraintLayout[0].getChildAt(0).getLayoutParams();
-                        ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) constraintLayout[0].getChildAt(1).getLayoutParams();
-                        params1.endToStart = constraintLayout[0].getChildAt(1).getId();
-                        params1.startToStart = constraintLayout[0].getId();
-                        params1.topToTop = constraintLayout[0].getId();
-                        params1.bottomToBottom = constraintLayout[0].getId();
-                        params1.width = Constraints.LayoutParams.MATCH_CONSTRAINT;
-                        params2.startToEnd = constraintLayout[0].getChildAt(0).getId();
-                        params2.topToTop = constraintLayout[0].getId();
-                        params2.bottomToBottom = constraintLayout[0].getId();
-                        params2.endToEnd = constraintLayout[0].getId();
-                        params2.width = Constraints.LayoutParams.MATCH_CONSTRAINT;
-                        layoutParams.bottomMargin = (int) (20 * scale + 0.5f);
-                        constraintLayout[0].getChildAt(0).setLayoutParams(params1);
-                        constraintLayout[0].getChildAt(1).setLayoutParams(params2);
-                        constraintLayout[0].setLayoutParams(layoutParams);
-                        gridLayout.addView(constraintLayout[0]);
-                        constraintLayout[0] = new ConstraintLayout(view.getContext());
+                        Resources resources = requireContext().getResources();
+                        if(resources != null){
+                            float scale = resources.getDisplayMetrics().density;
+                            constraintLayout[0].setId(View.generateViewId());
+                            ConstraintLayout.LayoutParams params1 = (ConstraintLayout.LayoutParams) constraintLayout[0].getChildAt(0).getLayoutParams();
+                            ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) constraintLayout[0].getChildAt(1).getLayoutParams();
+                            params1.endToStart = constraintLayout[0].getChildAt(1).getId();
+                            params1.startToStart = constraintLayout[0].getId();
+                            params1.topToTop = constraintLayout[0].getId();
+                            params1.bottomToBottom = constraintLayout[0].getId();
+                            params1.width = Constraints.LayoutParams.MATCH_CONSTRAINT;
+                            params2.startToEnd = constraintLayout[0].getChildAt(0).getId();
+                            params2.topToTop = constraintLayout[0].getId();
+                            params2.bottomToBottom = constraintLayout[0].getId();
+                            params2.endToEnd = constraintLayout[0].getId();
+                            params2.width = Constraints.LayoutParams.MATCH_CONSTRAINT;
+                            layoutParams.bottomMargin = (int) (20 * scale + 0.5f);
+                            constraintLayout[0].getChildAt(0).setLayoutParams(params1);
+                            constraintLayout[0].getChildAt(1).setLayoutParams(params2);
+                            constraintLayout[0].setLayoutParams(layoutParams);
+                            gridLayout.addView(constraintLayout[0]);
+                            constraintLayout[0] = new ConstraintLayout(view.getContext());
+                        }
                     };
+                }
+                if(constraintLayout[0].getChildCount() == 1){
+
+                    constraintLayout[0].setLayoutParams(layoutParams);
+                    gridLayout.addView(constraintLayout[0]);
                 }
             }
         });

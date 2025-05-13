@@ -1,12 +1,33 @@
 package com.example.proMenu;
 
+import static android.content.ContentValues.TAG;
+import static android.view.View.TEXT_ALIGNMENT_CENTER;
+
+import android.app.ActionBar;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Source;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +81,56 @@ public class StoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_store, container, false);
+        String[] menu;
+        try{
+            menu = getArguments().getStringArray("menu");
+        } catch (Exception e){
+            menu = null;
+        }
+        LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+        if(menu != null){
+            for(String menuItem : menu){
+                View storeMenuLayout = inflater.inflate(R.layout.store_menu_layout, container, false);
+                TextView titleTextView = storeMenuLayout.findViewById(R.id.titleTextView);
+                CardView cardView = storeMenuLayout.findViewById(R.id.cardView);
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("stores").document(getArguments().getString("documentId"))
+                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                Map<String, Object> items = task.getResult().getData();
+                                ArrayList<String> itemList = (ArrayList<String>) items.get(menuItem);
+                                ItemsFragment itemsFragment = new ItemsFragment();
+                                Bundle dataBundle = new Bundle();
+                                if(itemList != null){
+                                    String[] itemListString = new String[itemList.size()];
+                                    itemList.toArray(itemListString);
+                                    dataBundle.putStringArray("items", itemListString);
+                                } else {
 
+                                }
+                                FragmentManager fragmentManager = getParentFragmentManager();
+                                itemsFragment.setArguments(dataBundle);
+                                fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, itemsFragment, null).addToBackStack(null).commit();
+                            }
+                        });
+                    }
+                });
+                titleTextView.setText(menuItem);
+                linearLayout.addView(storeMenuLayout);
+            }
+        } else {
+            TextView noMenu = new TextView(view.getContext());
+            noMenu.setText("NO MENU AVAILABLE");
+            noMenu.setGravity(Gravity.CENTER);
+            noMenu.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            noMenu.setLayoutParams(layoutParams);
+            linearLayout.addView(noMenu);
+        }
         return view;
     }
 }

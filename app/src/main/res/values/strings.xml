@@ -11,7 +11,9 @@
     <string name="bottomnavbar_order_button">Orders</string>
     <string name="bottomnavbar_accounts_button">Account</string>
     <string name="TitleCard">PROMENADE\nSTALLS</string>
-
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="no_items">NO ITEMS</string>
+    <string name="cart">Cart</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
