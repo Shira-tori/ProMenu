@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Constraints;
@@ -20,6 +21,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,12 +70,15 @@ public class ItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_items, container, false);
         String[] items = getArguments().getStringArray("items");
+        String storeId = getArguments().getString("storeId");
         FragmentManager fragmentManager = getParentFragmentManager();
         GridLayout gridLayout = view.findViewById(R.id.gridLayout);
         ConstraintLayout constraintLayout = new ConstraintLayout(view.getContext());
         constraintLayout.setId(View.generateViewId());
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(-1, -1);
         constraintLayout.setLayoutParams(layoutParams);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -79,14 +95,46 @@ public class ItemsFragment extends Fragment {
                 price.setText("₱"+ menuItems.split("-")[1]);
                 Button addToCartButton = itemCards.findViewById(R.id.addToCart);
                 addToCartButton.setText(R.string.add_to_cart);
-                constraintLayout.addView(itemCards);
-                CardView cards = itemCards.findViewById(R.id.cardView);
-                cards.setOnClickListener(new View.OnClickListener() {
+                addToCartButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        DocumentReference docRef = db.collection("accounts").document(user.getUid());
+                        Task<DocumentSnapshot> task = docRef.get();
+                        task.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                DocumentSnapshot document = task.getResult();
+                                Map<String, Object> documentItems = document.getData();
+                                Map<String, Object> store = (HashMap<String, Object>) documentItems.get("cart");
+                                if(store.get(storeId) == null){
+                                    Map<String, Object> cartItems = new HashMap<>();
+                                    ArrayList<String> items = new ArrayList<>();
+                                    items.add((String) itemName.getText());
+                                    ArrayList<Integer> prices = new ArrayList<>();
+                                    prices.add(Integer.parseInt(menuItems.split("-")[1]));
+                                    cartItems.put("items", items);
+                                    cartItems.put("prices", prices);
+                                    store.put(storeId, cartItems);
+                                } else{
+                                    Map<String, Object> cartItems = (HashMap<String, Object>) store.get(storeId);
+                                    ArrayList<String> items = (ArrayList<String>) cartItems.get("items");
+                                    ArrayList<Integer> prices = (ArrayList<Integer>) cartItems.get("prices");
+                                    items.add((String) itemName.getText());
+                                    prices.add(Integer.parseInt(menuItems.split("-")[1]));
+                                    cartItems.replace("items", items);
+                                    cartItems.replace("prices", prices);
+                                }
+                                docRef.update(documentItems);
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+                                alertDialog.setTitle("Added to Cart!");
+                                alertDialog.setMessage("Item successfully added to cart.");
+                                alertDialog.show();
+                            }
+                        });
                     }
                 });
+                constraintLayout.addView(itemCards);
+                CardView cards = itemCards.findViewById(R.id.cardView);
                 if(constraintLayout.getChildCount() == 2){
                     float scale = getContext().getResources().getDisplayMetrics().density;
                     ConstraintLayout.LayoutParams params1 = (ConstraintLayout.LayoutParams) constraintLayout.getChildAt(0).getLayoutParams();

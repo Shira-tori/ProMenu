@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, OrdersFragment.class, null).commit();
             } else if (itemId == R.id.account) {
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, AccountFragment.class, null).commit();
+            } else if (itemId == R.id.cart){
+                fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, CartFragment.class, null).commit();
             }
             return true;
         });

@@ -14,6 +14,8 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="no_items">NO ITEMS</string>
     <string name="cart">Cart</string>
+    <string name="checkout">Checkout</string>
+    <string name="total">Total Price: </string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

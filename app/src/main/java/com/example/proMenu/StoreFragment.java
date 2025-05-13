@@ -109,6 +109,7 @@ public class StoreFragment extends Fragment {
                                     String[] itemListString = new String[itemList.size()];
                                     itemList.toArray(itemListString);
                                     dataBundle.putStringArray("items", itemListString);
+                                    dataBundle.putString("storeId", getArguments().getString("documentId"));
                                 } else {
 
                                 }

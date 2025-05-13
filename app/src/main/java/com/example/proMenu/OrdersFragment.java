@@ -1,12 +1,31 @@
 package com.example.proMenu;
 
+import static android.content.ContentValues.TAG;
+
+import android.nfc.Tag;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +78,44 @@ public class OrdersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orders, container, false);
+        View view = inflater.inflate(R.layout.fragment_orders, container, false);
+        ArrayList<OrderStructure> ordersList = new ArrayList<OrderStructure>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        CollectionReference orders = db.collection("orders");
+        orders.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for(QueryDocumentSnapshot document : task.getResult()){
+                    String customerId = (String) document.get("customerId");
+                    if(customerId.equals(user.getUid())){
+                        OrderStructure order = new OrderStructure();
+                        order.customerId = customerId;
+                        order.completed = (Boolean) document.get("completed");
+                        order.storeId = (String) document.get("storeId");
+                        order.totalPrice = (Long) document.get("totalPrice");
+                        order.items = (ArrayList<String>) document.get("items");
+                        ordersList.add(order);
+                        LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+                        for(OrderStructure ordersItem : ordersList){
+                            View orderView = inflater.inflate(R.layout.order_layout, container, false);
+                            TextView itemText = orderView.findViewById(R.id.itemsText);
+                            TextView totalPrice = orderView.findViewById(R.id.totalPrice);
+                            TextView status = orderView.findViewById(R.id.statusText);
+                            totalPrice.setText("₱" + Long.toString(ordersItem.totalPrice));
+                            itemText.setText(ordersItem.items.toString());
+                            if ((boolean) ordersItem.completed) {
+                                status.setText("STATUS: COMPLETED");
+                            } else {
+                                status.setText("STATUS: PREPARING");
+                            }
+                            linearLayout.addView(orderView);
+                        }
+                    };
+                }
+            }
+        });
+
+        return view;
     }
 }
