@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,38 +21,24 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CartFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    ArrayList<String> stores = new ArrayList<>();
+    HashMap<String, ArrayList<String>> items = new HashMap<>();
+    int totalPrice = 0;
 
     public CartFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CartFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CartFragment newInstance(String param1, String param2) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
@@ -76,14 +64,33 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        ExpandableListView expandableListView = view.findViewById(R.id.expandableListView);
+        TextView totalPriceText = view.findViewById(R.id.totalPriceCart);
         db.collection("accounts").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 Map<String, Object> cart = (HashMap<String, Object>) document.get("cart");
-                for(Map.Entry<String, Object> entry : cart.entrySet()){
+                if(cart == null){
 
+                } else{
+                    for(Map.Entry<String, Object> entry : cart.entrySet()){
+                        String storeId = entry.getKey();
+                        String storeName;
+                        Map<String, Object> storeMap = (HashMap<String, Object>) entry.getValue();
+                        stores.add(storeId);
+                        ArrayList<String> itemsList = (ArrayList<String>) storeMap.get("items");
+                        ArrayList<Long> priceList = (ArrayList<Long>) storeMap.get("prices");
+                        for(long price : priceList){
+                            totalPrice += price;
+                        }
+                        items.put(storeId, itemsList);
+                    }
+                    CartExpandableListViewAdapter adapter = new CartExpandableListViewAdapter(stores, items);
+                    expandableListView.setAdapter(adapter);
                 }
+
+                totalPriceText.setText("₱" + Integer.toString(totalPrice));
             }
         });
         return view;

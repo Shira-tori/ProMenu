@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="125dp"
                 android:layout_marginBottom="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/textConstraint"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
                 <TextView
                     android:id="@+id/itemNameTitle"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:text="TextView"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/priceTitle"

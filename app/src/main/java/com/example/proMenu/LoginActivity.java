@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.Objects;
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    boolean found = false;
 
     // See: https://developer.android.com/training/basics/intents/result
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
@@ -85,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if(document.getId().equals(user.getUid())){
-
+                                    found = true;
                                     if(Objects.equals(document.get("type"), "merchant")){
                                         Log.w(TAG, "SUCCESS");
                                         Intent intent = new Intent(LoginActivity.this, MerchantActivity.class);
@@ -94,6 +96,13 @@ public class LoginActivity extends AppCompatActivity {
                                         return;
                                     }
                                 };
+                            }
+                            if(!found){
+                                HashMap<String, Object> items = new HashMap<>();
+                                HashMap<String, ArrayList<String>> storeItems = new HashMap<>();
+                                items.put("merchant", false);
+                                items.put("cart", storeItems);
+                                db.collection("accounts").document(user.getUid()).set(items);
                             }
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);

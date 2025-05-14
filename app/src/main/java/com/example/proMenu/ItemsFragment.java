@@ -106,7 +106,18 @@ public class ItemsFragment extends Fragment {
                                 DocumentSnapshot document = task.getResult();
                                 Map<String, Object> documentItems = document.getData();
                                 Map<String, Object> store = (HashMap<String, Object>) documentItems.get("cart");
-                                if(store.get(storeId) == null){
+                                if(store == null){
+                                    store = new HashMap<String, Object>();
+                                    Map<String, Object> cartItem = new HashMap<>();
+                                    ArrayList<String> items = new ArrayList<>();
+                                    items.add((String) itemName.getText());
+                                    ArrayList<Integer> prices = new ArrayList<>();
+                                    prices.add(Integer.parseInt(menuItems.split("-")[1]));
+                                    cartItem.put("items", items);
+                                    cartItem.put("prices", prices);
+                                    store.put(storeId, cartItem);
+                                    documentItems.replace("cart", store);
+                                } else if(store.get(storeId) == null){
                                     Map<String, Object> cartItems = new HashMap<>();
                                     ArrayList<String> items = new ArrayList<>();
                                     items.add((String) itemName.getText());
