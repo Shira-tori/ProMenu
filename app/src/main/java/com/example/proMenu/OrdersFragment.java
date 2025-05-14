@@ -92,26 +92,25 @@ public class OrdersFragment extends Fragment {
                         OrderStructure order = new OrderStructure();
                         order.customerId = customerId;
                         order.completed = (Boolean) document.get("completed");
-                        order.storeId = (String) document.get("storeId");
                         order.totalPrice = (Long) document.get("totalPrice");
                         order.items = (ArrayList<String>) document.get("items");
                         ordersList.add(order);
-                        LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
-                        for(OrderStructure ordersItem : ordersList){
-                            View orderView = inflater.inflate(R.layout.order_layout, container, false);
-                            TextView itemText = orderView.findViewById(R.id.itemsText);
-                            TextView totalPrice = orderView.findViewById(R.id.totalPrice);
-                            TextView status = orderView.findViewById(R.id.statusText);
-                            totalPrice.setText("₱" + Long.toString(ordersItem.totalPrice));
-                            itemText.setText(ordersItem.items.toString());
-                            if ((boolean) ordersItem.completed) {
-                                status.setText("STATUS: COMPLETED");
-                            } else {
-                                status.setText("STATUS: PREPARING");
-                            }
-                            linearLayout.addView(orderView);
-                        }
                     };
+                }
+                LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+                for(OrderStructure ordersItem : ordersList){
+                    View orderView = inflater.inflate(R.layout.order_layout, container, false);
+                    TextView itemText = orderView.findViewById(R.id.itemsText);
+                    TextView totalPrice = orderView.findViewById(R.id.totalPrice);
+                    TextView status = orderView.findViewById(R.id.statusText);
+                    totalPrice.setText("₱" + Long.toString(ordersItem.totalPrice));
+                    itemText.setText(ordersItem.items.toString());
+                    if ((boolean) ordersItem.completed) {
+                        status.setText("STATUS: COMPLETED");
+                    } else {
+                        status.setText("STATUS: PREPARING");
+                    }
+                    linearLayout.addView(orderView);
                 }
             }
         });

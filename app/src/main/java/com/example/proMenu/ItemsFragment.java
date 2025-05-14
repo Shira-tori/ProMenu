@@ -71,6 +71,7 @@ public class ItemsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_items, container, false);
         String[] items = getArguments().getStringArray("items");
         String storeId = getArguments().getString("storeId");
+        String storeName = getArguments().getString("storeName");
         FragmentManager fragmentManager = getParentFragmentManager();
         GridLayout gridLayout = view.findViewById(R.id.gridLayout);
         ConstraintLayout constraintLayout = new ConstraintLayout(view.getContext());
@@ -115,9 +116,9 @@ public class ItemsFragment extends Fragment {
                                     prices.add(Integer.parseInt(menuItems.split("-")[1]));
                                     cartItem.put("items", items);
                                     cartItem.put("prices", prices);
-                                    store.put(storeId, cartItem);
+                                    store.put(storeName, cartItem);
                                     documentItems.replace("cart", store);
-                                } else if(store.get(storeId) == null){
+                                } else if(store.get(storeName) == null){
                                     Map<String, Object> cartItems = new HashMap<>();
                                     ArrayList<String> items = new ArrayList<>();
                                     items.add((String) itemName.getText());
@@ -125,15 +126,17 @@ public class ItemsFragment extends Fragment {
                                     prices.add(Integer.parseInt(menuItems.split("-")[1]));
                                     cartItems.put("items", items);
                                     cartItems.put("prices", prices);
-                                    store.put(storeId, cartItems);
+                                    cartItems.put("storeId", storeId);
+                                    store.put(storeName, cartItems);
                                 } else{
-                                    Map<String, Object> cartItems = (HashMap<String, Object>) store.get(storeId);
+                                    Map<String, Object> cartItems = (HashMap<String, Object>) store.get(storeName);
                                     ArrayList<String> items = (ArrayList<String>) cartItems.get("items");
                                     ArrayList<Integer> prices = (ArrayList<Integer>) cartItems.get("prices");
                                     items.add((String) itemName.getText());
                                     prices.add(Integer.parseInt(menuItems.split("-")[1]));
                                     cartItems.replace("items", items);
                                     cartItems.replace("prices", prices);
+                                    store.put(storeName,cartItems);
                                 }
                                 docRef.update(documentItems);
                                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());

@@ -103,6 +103,7 @@ public class StoreFragment extends Fragment {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 Map<String, Object> items = task.getResult().getData();
                                 ArrayList<String> itemList = (ArrayList<String>) items.get(menuItem);
+                                String storeName = (String) items.get("name");
                                 ItemsFragment itemsFragment = new ItemsFragment();
                                 Bundle dataBundle = new Bundle();
                                 if(itemList != null){
@@ -110,6 +111,7 @@ public class StoreFragment extends Fragment {
                                     itemList.toArray(itemListString);
                                     dataBundle.putStringArray("items", itemListString);
                                     dataBundle.putString("storeId", getArguments().getString("documentId"));
+                                    dataBundle.putString("storeName", storeName);
                                 } else {
 
                                 }

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -19,9 +20,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +37,8 @@ public class CartFragment extends Fragment {
     private String mParam2;
     ArrayList<String> stores = new ArrayList<>();
     HashMap<String, ArrayList<String>> items = new HashMap<>();
+    CartExpandableListViewAdapter adapter;
+
     int totalPrice = 0;
 
     public CartFragment() {
@@ -66,6 +71,25 @@ public class CartFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         ExpandableListView expandableListView = view.findViewById(R.id.expandableListView);
         TextView totalPriceText = view.findViewById(R.id.totalPriceCart);
+        Button checkoutButton = view.findViewById(R.id.checkoutButton);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(String store : stores){
+
+                    Map<String, Object> documentFields = new HashMap<>();
+                    documentFields.put("completed", false);
+                    documentFields.put("customerId", user.getUid());
+                    documentFields.put("items", items.get(store));
+                    documentFields.put("storeName", store);
+                    documentFields.put("totalPrice", totalPrice);
+                    documentFields.put("createdAt", FieldValue.serverTimestamp());
+                    db.collection("orders").add(documentFields);;
+                    db.collection("accounts").document(user.getUid()).update("cart", null);
+
+                }
+            }
+        });
         db.collection("accounts").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -86,10 +110,9 @@ public class CartFragment extends Fragment {
                         }
                         items.put(storeId, itemsList);
                     }
-                    CartExpandableListViewAdapter adapter = new CartExpandableListViewAdapter(stores, items);
+                    adapter = new CartExpandableListViewAdapter(stores, items);
                     expandableListView.setAdapter(adapter);
                 }
-
                 totalPriceText.setText("₱" + Integer.toString(totalPrice));
             }
         });
